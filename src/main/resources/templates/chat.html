@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <script th:src="@{jquery.js}"></script>
+    <script th:src="@{sockjs.min.js}"></script>
+    <script th:src="@{stomp.min.js}"></script>
+</head>
+<body>
+<p>聊天室</p>
+<form id="form">
+    <textarea rows="4" cols="60" name="text"></textarea>
+    <input type="submit" value="提交"/>
+</form>
+<a href="/hello">hello</a>
+<div id="output"></div>
+<button id="stop"  >停止</button>
+<form th:action="@{/logout}" method="post">
+<input type="submit" value="注销"/>
+</form>
+<script th:inline="javascript">
+    var sock=new SockJS("/endpointChat");
+    var stomp=Stomp.over(sock);
+    $("#form").submit(function (e) {
+        debugger;
+        e.preventDefault();//防止上面的链接打开 URL。
+        var text=$('#form').find('textarea[name="text"]').val();
+        console.log(text)
+        stomp.send("/app/chat",{},text);
+    })
+    //STOMP 代理中继会假设 代理监听 localhost 的61613 端口并且 client 的 username 和password 均为 guest。当然你也可以自行定义
+    stomp.connect('guest','guest',function (frame) {
+        stomp.subscribe("/user/queue/singleChat",function (message) {
+            $("#output").append("<b>Recevied:"+message.body+"</b><br/>")
+        })
+    })
+    $("#stop").click(function () {
+        sock.close();
+    })
+</script>
+</body>
+</html>

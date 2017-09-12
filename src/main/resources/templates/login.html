@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<!--xmlns="http://www.w3.org/1999/xhtml":如果需要使用符合 XML 规范的 XHTML 文档，则应该在文档中的<html> 标签中至少使用一个 xmlns 属性，以指定整个文档所使用的主要命名空间：-->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecutity3">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<body>
+<div th:if="${param.error}">
+    无效的账号
+</div>
+<div th:if="${param.logout}">
+    你已注销
+</div>
+<form th:action="@{/login}" method="post" >
+    <div> <label >账号:<input type="text" name="username" /></label></div>
+    <div> <label >密码<input type="password" name="password" /></label></div>
+    <div><input type="submit" value="登录" /></div>
+</form>
+</body>
+</html>
